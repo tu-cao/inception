@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -31,6 +30,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.select.BootstrapSelect;
 import de.tudarmstadt.ukp.clarin.webanno.api.AnnotationSchemaService;
 import de.tudarmstadt.ukp.clarin.webanno.api.annotation.feature.FeatureSupportRegistry;
 import de.tudarmstadt.ukp.clarin.webanno.model.AnnotationFeature;
@@ -94,21 +94,21 @@ public class ConceptFeatureTraitsEditor
         };
         
         form.add(
-                new DropDownChoice<>(MID_SCOPE, 
+                new BootstrapSelect<>(MID_SCOPE, 
                         LambdaModel.of(this::listConcepts),
                         new LambdaChoiceRenderer<>(KBHandle::getUiLabel))
                 .setNullValid(true)
                 .setOutputMarkupPlaceholderTag(true));
 
         form.add(
-                new DropDownChoice<>(MID_KNOWLEDGE_BASE, 
+                new BootstrapSelect<>(MID_KNOWLEDGE_BASE, 
                         LambdaModel.of(this::listKnowledgeBases), 
                         new LambdaChoiceRenderer<>(KnowledgeBase::getName))
                 .setNullValid(true)
                 .add(new LambdaAjaxFormComponentUpdatingBehavior("change", target ->
                         target.add(form.get(MID_SCOPE)))));
         form.add(
-            new DropDownChoice<>(MID_ALLOWED_VALUE_TYPE, LambdaModel.of(this::listAllowedTypes)));
+            new BootstrapSelect<>(MID_ALLOWED_VALUE_TYPE, LambdaModel.of(this::listAllowedTypes)));
 
         add(form);
     }

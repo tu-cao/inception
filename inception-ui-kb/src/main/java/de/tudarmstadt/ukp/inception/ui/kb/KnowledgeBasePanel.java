@@ -17,6 +17,8 @@
  */
 package de.tudarmstadt.ukp.inception.ui.kb;
 
+import static de.tudarmstadt.ukp.clarin.webanno.support.lambda.LambdaBehavior.visibleWhen;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.event.annotation.OnEvent;
 
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.select.BootstrapSelect;
 import de.tudarmstadt.ukp.clarin.webanno.model.Project;
 import de.tudarmstadt.ukp.clarin.webanno.support.lambda.LambdaAjaxFormComponentUpdatingBehavior;
 import de.tudarmstadt.ukp.clarin.webanno.support.lambda.LambdaModel;
@@ -100,18 +103,10 @@ public class KnowledgeBasePanel
         kbModel = aKbModel;
         
         // add the selector for the knowledge bases
-        DropDownChoice<KnowledgeBase> ddc = new DropDownChoice<KnowledgeBase>("knowledgebases",
-                LambdaModel.of(() -> kbService.getEnabledKnowledgeBases(aProjectModel.getObject())))
-        {
-
-            private static final long serialVersionUID = -2635546743813402116L;
-
-            @Override
-            public boolean isVisible() {
-                // only visible if there is a choice between two or more KBs
-                return getChoices().size() >= 2;
-            }
-        };
+        DropDownChoice<KnowledgeBase> ddc = new BootstrapSelect<KnowledgeBase>("knowledgebases");
+        ddc.setChoices(LambdaModel.of(() -> 
+                kbService.getEnabledKnowledgeBases(aProjectModel.getObject())));
+        ddc.add(visibleWhen(() -> ddc.getChoices().size() >= 2));
         ddc.add(new LambdaAjaxFormComponentUpdatingBehavior("change", t -> {
             details = details.replaceWith(new EmptyPanel(DETAILS_MARKUP_ID));
             t.add(KnowledgeBasePanel.this);
